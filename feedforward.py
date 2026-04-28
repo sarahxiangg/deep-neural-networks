@@ -19,3 +19,6 @@ class FeedforwardLayer():
 
     def get_lr(self) -> float:
         return self.lr
+
+    def forward(self, x) -> np.ndarray:
+        return self.weights @ x + self.biases
