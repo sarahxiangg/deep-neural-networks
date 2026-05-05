@@ -10,6 +10,7 @@ class FeedforwardLayer():
         self.lr = lr
         self.weights = initial_weights if initial_weights is not None else np.random.uniform(-1, 1, (n, m))
         self.biases = initial_biases if initial_biases is not None else np.random.uniform(-1, 1, n)
+        self.last_input = None
 
     def get_weights(self) -> np.ndarray:
         return self.weights
@@ -21,4 +22,15 @@ class FeedforwardLayer():
         return self.lr
 
     def forward(self, x) -> np.ndarray:
+        self.last_input = x
         return self.weights @ x + self.biases
+
+    def backward(self, grads: np.ndarray) -> np.ndarray:
+        grad_weights = np.outer(grads, self.last_input)
+        grad_biases = grads
+        grad_input = self.weights.T @ grads
+
+        self.weights -= self.lr * grad_weights
+        self.biases -= self.lr * grad_biases
+
+        return grad_input
