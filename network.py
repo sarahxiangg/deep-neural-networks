@@ -17,8 +17,11 @@ class Network():
 
     def _make_target(self, logits: np.ndarray, true: int) -> np.ndarray:
         target = np.zeros_like(logits)
-        if 0 <= true < len(logits):
-            target[true] = 1
+        if len(logits) == 1:
+            target[0] = true
+        else:
+            if 0 <= true < len(logits):
+                target[true] = 1
         return target
 
     def calculate_MSE(self, logits: np.ndarray, true: int) -> float:
