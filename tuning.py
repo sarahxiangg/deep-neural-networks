@@ -9,6 +9,7 @@ from network import Network
 from feedforward import FeedforwardLayer
 from sigmoid import SigmoidLayer
 from feedforward_with_momentum import FeedforwardLayer as MomentumFeedforwardLayer
+from softmax_network import SoftmaxNetwork
 from softmax import SoftmaxLayer
 
 # fix random seeds so results are reproducible
@@ -102,13 +103,12 @@ def build_gradient(input_size, hidden_neurons, lr):
 
 
 def build_softmax(input_size, hidden_neurons, lr):
-    # build mlp with two output neurons and softmax final layer
-    return Network([
+    return SoftmaxNetwork([
         FeedforwardLayer(input_size, hidden_neurons, lr),
         SigmoidLayer(hidden_neurons),
         FeedforwardLayer(hidden_neurons, 2, lr),
         SoftmaxLayer(2)
-    ])
+        ])
 
 
 def build_model(input_size, hidden_neurons, lr, algorithm):
