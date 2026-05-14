@@ -12,13 +12,14 @@ class FeedforwardLayer():
         initial_biases: np.ndarray = None,
         momentum: float = 0.9
     ):
-
         self.m = m
         self.n = n
 
+        # learning rate and momentum coefficient
         self.lr = lr
         self.momentum = momentum
 
+        # initialise weights and biaes randomly if none provided
         if initial_weights is not None:
             self.weights = initial_weights
         else:
@@ -29,9 +30,11 @@ class FeedforwardLayer():
         else:
             self.biases = np.random.uniform(-1, 1, n)
 
+        # store previous updates for momentum optimisation
         self.weight_velocity = np.zeros((n, m))
         self.bias_velocity = np.zeros(n)
 
+        # store previous input for backpropagation
         self.last_input = None
 
     def get_weights(self) -> np.ndarray:
@@ -45,8 +48,10 @@ class FeedforwardLayer():
 
     def forward(self, x) -> np.ndarray:
 
+        # store input for gradient calculation
         self.last_input = x
 
+        # compute weighted sum plus bias
         output = self.weights @ x
         output = output + self.biases
 
@@ -54,15 +59,18 @@ class FeedforwardLayer():
 
     def backward(self, grads: np.ndarray) -> np.ndarray:
 
+        # calculate gradients for weights and biases
         grad_weights = np.outer(grads, self.last_input)
-
         grad_biases = grads
 
+        # propagate gradients to previous layer
         grad_input = self.weights.T @ grads
 
+        # calculate gradient descent updates
         weight_update = self.lr * grad_weights
         bias_update = self.lr * grad_biases
 
+        # apply momentum using previous velocity values
         self.weight_velocity = (
             self.momentum * self.weight_velocity
         ) - weight_update
@@ -71,6 +79,7 @@ class FeedforwardLayer():
             self.momentum * self.bias_velocity
         ) - bias_update
 
+        # update parameters using momentum-adjusted values
         self.weights = self.weights + self.weight_velocity
         self.biases = self.biases + self.bias_velocity
 
